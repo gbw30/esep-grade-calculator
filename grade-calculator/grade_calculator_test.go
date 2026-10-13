@@ -123,3 +123,32 @@ func TestGetFinalGradeDistinctCategoryScores(t *testing.T) {
 		t.Errorf("GetFinalGrade() = %q; want C", actual)
 	}
 }
+
+func TestPassFailMode(t *testing.T) {
+	cases := []struct {
+		name       string
+		assignment int
+		exam       int
+		essay      int
+		expected   string
+	}{
+		{name: "C boundary passes", assignment: 70, exam: 70, essay: 70, expected: "Pass"},
+		{name: "below C fails", assignment: 69, exam: 69, essay: 69, expected: "Fail"},
+		{name: "high scores pass", assignment: 100, exam: 100, essay: 100, expected: "Pass"},
+		{name: "weighted score passes", assignment: 100, exam: 60, essay: 0, expected: "Pass"},
+		{name: "weighted score fails", assignment: 70, exam: 70, essay: 60, expected: "Fail"},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			calculator := NewGradeCalculator(true)
+			calculator.AddGrade("assignment", tc.assignment, Assignment)
+			calculator.AddGrade("exam", tc.exam, Exam)
+			calculator.AddGrade("essay", tc.essay, Essay)
+
+			if actual := calculator.GetFinalGrade(); actual != tc.expected {
+				t.Errorf("GetFinalGrade() = %q; want %q", actual, tc.expected)
+			}
+		})
+	}
+}
