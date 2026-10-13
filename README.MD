@@ -54,6 +54,18 @@ finalGrade := calculator.GetFinalGrade()
 
 According to the grading rules, these scores produce a weighted result of 88 and a letter grade of B.
 
+To receive a Pass/Fail result, create the calculator with `true`:
+
+```go
+calculator := NewGradeCalculator(true)
+calculator.AddGrade("Assignment 1", 70, Assignment)
+calculator.AddGrade("Exam 1", 70, Exam)
+calculator.AddGrade("Essay 1", 70, Essay)
+result := calculator.GetFinalGrade() // "Pass"
+```
+
+The zero-argument constructor keeps letter grades. In Pass/Fail mode, a final numerical grade of at least 70 returns `Pass`; a lower grade returns `Fail`.
+
 ## Run Unit Tests
 
 From the repository root:
@@ -84,6 +96,4 @@ Coverage reports which source statements executed during testing. It does not gu
 
 ## Current Limitations
 
-The initial implementation contains known calculation bugs and an incorrectly formed failing-grade test. The usage example describes the intended result; run the tests to evaluate the current implementation.
-
-Each category must contain at least one score to avoid division by zero. Score validation and a policy for missing categories are not implemented.
+The calculator treats an empty category average as zero and does not reject scores outside the usual 0-100 range. The product requirements should define whether missing categories should instead redistribute their weights and how invalid scores should be handled.
